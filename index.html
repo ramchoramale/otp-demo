@@ -1,70 +1,79 @@
-<!DOCTYPE html>    
-<html>    
-<head>    
-  <title>Agri Export - Free OTP</title>    
-  <meta name="viewport" content="width=device-width, initial-scale=1">    
-    
-  <!-- Firebase CDN -->    
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>    
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>    
-</head>    
-    
-<body>    
-    
-<h2>Agri Export OTP Verification</h2>    
-    
-<input type="text" id="phone" placeholder="+91XXXXXXXXXX">    
-<button onclick="sendOTP()">Get OTP</button>    
-    
-<div id="recaptcha-container"></div>    
-    
-<br><br>    
-    
-<input type="text" id="otp" placeholder="Enter OTP">    
-<button onclick="verifyOTP()">Verify OTP</button>    
-    
-<p id="msg"></p>    
-    
-<script>    
-  // 🔹 Replace with your Firebase config    
-  const firebaseConfig = {    
-    apiKey: "YOUR_API_KEY",    
-    authDomain: "YOUR_PROJECT.firebaseapp.com",    
-    projectId: "YOUR_PROJECT_ID",    
-    appId: "YOUR_APP_ID"    
-  };    
-    
-  firebase.initializeApp(firebaseConfig);    
-  const auth = firebase.auth();    
-    
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(    
-    "recaptcha-container",    
-    { size: "normal" }    
-  );    
-    
-  function sendOTP() {    
-    const phone = document.getElementById("phone").value;    
-    auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)    
-      .then((confirmationResult) => {    
-        window.confirmationResult = confirmationResult;    
-        document.getElementById("msg").innerText = "OTP Sent ✅";    
-      })    
-      .catch((error) => {    
-        document.getElementById("msg").innerText = error.message;    
-      });    
-  }    
-    
-  function verifyOTP() {    
-    const otp = document.getElementById("otp").value;    
-    confirmationResult.confirm(otp)    
-      .then(() => {    
-        document.getElementById("msg").innerText = "OTP Verified Successfully ✅";    
-      })    
-      .catch(() => {    
-        document.getElementById("msg").innerText = "Invalid OTP ❌";    
-      });    
-  }    
-</script>    
-    
-</body>    
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agri Export - Free OTP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+
+<h2>Agri Export OTP Verification</h2>
+
+<input type="text" id="phone" placeholder="+91XXXXXXXXXX">
+<button onclick="sendOTP()">Get OTP</button>
+
+<div id="recaptcha-container"></div>
+
+<br><br>
+
+<input type="text" id="otp" placeholder="Enter OTP">
+<button onclick="verifyOTP()">Verify OTP</button>
+
+<p id="msg"></p>
+
+<script>
+  // 🔹 Use YOUR Firebase project config here
+  const firebaseConfig = {
+    apiKey: "AIzaSyCI0E_iMD4JgujgODhj_jkEzHyk5fMw74g",
+    authDomain: "otp-web-37a4c.firebaseapp.com",
+    projectId: "otp-web-37a4c",
+    storageBucket: "otp-web-37a4c.appspot.com",
+    messagingSenderId: "48604174432",
+    appId: "1:48604174432:web:2862f3a82e45480d38cb05",
+    measurementId: "G-Z2CMD8C8F3"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // reCAPTCHA
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+    "recaptcha-container",
+    { size: "normal" }
+  );
+
+  // Send OTP
+  function sendOTP() {
+    const phone = document.getElementById("phone").value;
+
+    auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        document.getElementById("msg").innerText = "OTP Sent ✅ Check your SMS";
+      })
+      .catch((error) => {
+        document.getElementById("msg").innerText = "Error: " + error.message;
+      });
+  }
+
+  // Verify OTP
+  function verifyOTP() {
+    const otp = document.getElementById("otp").value;
+    window.confirmationResult.confirm(otp)
+      .then((result) => {
+        document.getElementById("msg").innerText = "OTP Verified Successfully ✅";
+        console.log("User info:", result.user);
+      })
+      .catch((error) => {
+        document.getElementById("msg").innerText = "Invalid OTP ❌";
+      });
+  }
+</script>
+
+</body>
 </html>
