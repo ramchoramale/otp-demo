@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Agri Export - Free OTP</title>
+  <title>Agri Export OTP Verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { padding: 8px; margin: 5px 0; width: 220px; }
+    button { padding: 8px 12px; }
+  </style>
 </head>
 
 <body>
@@ -16,6 +22,7 @@
 <input type="text" id="phone" placeholder="+91XXXXXXXXXX">
 <button onclick="sendOTP()">Get OTP</button>
 
+<!-- reCAPTCHA -->
 <div id="recaptcha-container"></div>
 
 <br><br>
@@ -26,50 +33,50 @@
 <p id="msg"></p>
 
 <script>
-  // 🔹 Use YOUR Firebase project config here
+  // 🔹 YOUR REAL FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyCI0E_iMD4JgujgODhj_jkEzHyk5fMw74g",
     authDomain: "otp-web-37a4c.firebaseapp.com",
     projectId: "otp-web-37a4c",
     storageBucket: "otp-web-37a4c.appspot.com",
     messagingSenderId: "48604174432",
-    appId: "1:48604174432:web:2862f3a82e45480d38cb05",
-    measurementId: "G-Z2CMD8C8F3"
+    appId: "1:48604174432:web:2862f3a82e45480d38cb05"
   };
 
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // reCAPTCHA
+  // Initialize reCAPTCHA
   window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-    "recaptcha-container",
-    { size: "normal" }
+    'recaptcha-container',
+    { size: 'normal' }
   );
 
   // Send OTP
   function sendOTP() {
-    const phone = document.getElementById("phone").value;
+    const phoneNumber = document.getElementById("phone").value;
 
-    auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
+    auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
-        document.getElementById("msg").innerText = "OTP Sent ✅ Check your SMS";
+        document.getElementById("msg").innerText = "OTP Sent ✅";
       })
       .catch((error) => {
-        document.getElementById("msg").innerText = "Error: " + error.message;
+        document.getElementById("msg").innerText = error.message;
+        console.error(error);
       });
   }
 
   // Verify OTP
   function verifyOTP() {
     const otp = document.getElementById("otp").value;
+
     window.confirmationResult.confirm(otp)
-      .then((result) => {
+      .then(() => {
         document.getElementById("msg").innerText = "OTP Verified Successfully ✅";
-        console.log("User info:", result.user);
       })
-      .catch((error) => {
+      .catch(() => {
         document.getElementById("msg").innerText = "Invalid OTP ❌";
       });
   }
