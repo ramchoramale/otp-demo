@@ -1,86 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Agri Export OTP Verification</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    input { padding: 8px; margin: 5px 0; width: 220px; }
-    button { padding: 8px 12px; }
-  </style>
+  <title>OTP Verification</title>
 </head>
-
 <body>
+  <h2>Send OTP</h2>
+  <input type="text" id="phone" placeholder="+91XXXXXXXXXX">
+  <button onclick="sendOTP()">Send OTP</button>
+  <br><br>
+  <input type="text" id="otpInput" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify OTP</button>
 
-<h2>Agri Export OTP Verification</h2>
+  <p id="msg"></p>
 
-<input type="text" id="phone" placeholder="+91XXXXXXXXXX">
-<button onclick="sendOTP()">Get OTP</button>
+  <script>
+    let serverOTP = '';
 
-<!-- reCAPTCHA -->
-<div id="recaptcha-container"></div>
-
-<br><br>
-
-<input type="text" id="otp" placeholder="Enter OTP">
-<button onclick="verifyOTP()">Verify OTP</button>
-
-<p id="msg"></p>
-
-<script>
-  // 🔹 YOUR REAL FIREBASE CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyCI0E_iMD4JgujgODhj_jkEzHyk5fMw74g",
-    authDomain: "otp-web-37a4c.firebaseapp.com",
-    projectId: "otp-web-37a4c",
-    storageBucket: "otp-web-37a4c.appspot.com",
-    messagingSenderId: "48604174432",
-    appId: "1:48604174432:web:2862f3a82e45480d38cb05"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // Initialize reCAPTCHA
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-    'recaptcha-container',
-    { size: 'normal' }
-  );
-
-  // Send OTP
-  function sendOTP() {
-    const phoneNumber = document.getElementById("phone").value;
-
-    auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        document.getElementById("msg").innerText = "OTP Sent ✅";
-      })
-      .catch((error) => {
-        document.getElementById("msg").innerText = error.message;
-        console.error(error);
+    async function sendOTP() {
+      const phone = document.getElementById('phone').value;
+      const res = await fetch('YOUR_REPLIT_URL/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
       });
-  }
+      const data = await res.json();
+      serverOTP = data.otp;
+      document.getElementById('msg').innerText = "OTP sent!";
+    }
 
-  // Verify OTP
-  function verifyOTP() {
-    const otp = document.getElementById("otp").value;
-
-    window.confirmationResult.confirm(otp)
-      .then(() => {
-        document.getElementById("msg").innerText = "OTP Verified Successfully ✅";
-      })
-      .catch(() => {
-        document.getElementById("msg").innerText = "Invalid OTP ❌";
-      });
-  }
-</script>
-
+    function verifyOTP() {
+      const entered = document.getElementById('otpInput').value;
+      if (entered === serverOTP) {
+        document.getElementById('msg').innerText = "OTP Verified!";
+      } else {
+        document.getElementById('msg').innerText = "Incorrect OTP!";
+      }
+    }
+  </script>
 </body>
 </html>
